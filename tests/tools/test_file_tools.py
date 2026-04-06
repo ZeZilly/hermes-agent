@@ -6,7 +6,11 @@ handling without requiring a running terminal environment.
 
 import json
 import logging
+import os
+from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 from tools.file_tools import (
     FILE_TOOLS,
@@ -309,6 +313,110 @@ class TestSearchHints:
         raw = search_tool(pattern="foo", offset=50, limit=50)
         assert "[Hint:" in raw
         assert "offset=100" in raw
+
+
+# ---------------------------------------------------------------------------
+# _check_sensitive_read_path — unit + integration tests (T3, PR-B)
+# ---------------------------------------------------------------------------
+
+
+class TestCheckSensitiveReadPath:
+    """Parametrized coverage for the credential-directory read guard."""
+
+    @pytest.mark.parametrize("path_str", [
+        "~/.ssh/id_rsa",               # exact file match
+        "~/.ssh/config",               # exact file match
+        "~/.ssh/authorized_keys",      # exact file match
+        "~/.netrc",                    # exact file match (top-level dotfile)
+        "~/.npmrc",                    # exact file match (top-level dotfile)
+        "~/.aws/credentials",          # directory prefix (.aws)
+        "~/.aws/config",               # directory prefix (.aws)
+        "~/.gnupg/secring.gpg",        # directory prefix (.gnupg)
+        "~/.kube/config",              # directory prefix (.kube)
+        "~/.docker/config.json",       # directory prefix (.docker)
+        "~/.azure/accessTokens.json",  # directory prefix (.azure)
+        "~/.config/gh/hosts.yml",      # directory prefix (.config/gh)
+        "~/.ssh/custom_key",           # arbitrary file inside .ssh/
+        "~/.ssh/subdirectory/id_rsa",  # deep subpath inside .ssh/
+    ])
+    def test_blocks_sensitive_paths(self, path_str):
+        from tools.file_tools import _check_sensitive_read_path
+        result = _check_sensitive_read_path(path_str)
+        assert result is not None, f"Expected block for {path_str!r}, got None"
+        assert "Access denied" in result
+
+    @pytest.mark.parametrize("path_str", [
+        "~/projects/myapp/config.py",
+        "/tmp/testfile.txt",
+        "~/Documents/notes.md",
+    ])
+    def test_allows_safe_paths(self, path_str):
+        from tools.file_tools import _check_sensitive_read_path
+        result = _check_sensitive_read_path(path_str)
+        assert result is None, f"Expected None (allowed) for {path_str!r}, got {result!r}"
+
+    def test_blocks_symlink_resolving_to_sensitive_path(self, tmp_path):
+        """A symlink in a safe directory that resolves to ~/.ssh/id_rsa must be blocked."""
+        from tools.file_tools import _check_sensitive_read_path
+        target = Path.home() / ".ssh" / "id_rsa"
+        link = tmp_path / "fake_key"
+        link.symlink_to(target)
+        result = _check_sensitive_read_path(str(link))
+        assert result is not None, "Symlink pointing to sensitive path must be blocked"
+        assert "Access denied" in result
+
+    def test_blocks_relative_path_traversal_to_sensitive_path(self, tmp_path, monkeypatch):
+        """A relative '../../.ssh/id_rsa' that resolves into ~/.ssh/ must be blocked."""
+        from tools.file_tools import _check_sensitive_read_path
+        # Use resolved forms on both sides to avoid macOS /private/... symlink skew.
+        ssh_key = Path.home().resolve() / ".ssh" / "id_rsa"
+        tmp_resolved = tmp_path.resolve()
+        try:
+            rel = os.path.relpath(ssh_key, tmp_resolved)
+        except ValueError:
+            pytest.skip("Cross-drive relative paths not supported on this platform")
+        monkeypatch.chdir(tmp_resolved)
+        result = _check_sensitive_read_path(rel)
+        assert result is not None, f"Relative traversal {rel!r} to sensitive target must be blocked"
+        assert "Access denied" in result
+
+
+class TestReadFileSensitiveGuardIntegration:
+    """read_file_tool must return access-denied JSON before touching any I/O."""
+
+    def test_blocks_ssh_private_key(self):
+        from tools.file_tools import read_file_tool
+        result = json.loads(read_file_tool("~/.ssh/id_rsa"))
+        assert "error" in result
+        assert "Access denied" in result["error"]
+
+    def test_blocks_aws_credentials(self):
+        from tools.file_tools import read_file_tool
+        result = json.loads(read_file_tool("~/.aws/credentials"))
+        assert "error" in result
+        assert "Access denied" in result["error"]
+
+    def test_blocks_docker_config(self):
+        from tools.file_tools import read_file_tool
+        result = json.loads(read_file_tool("~/.docker/config.json"))
+        assert "error" in result
+        assert "Access denied" in result["error"]
+
+
+class TestSearchSensitiveGuardIntegration:
+    """search_tool must return access-denied JSON when path points into a credential dir."""
+
+    def test_blocks_ssh_directory(self):
+        from tools.file_tools import search_tool
+        result = json.loads(search_tool(pattern="KEY", path="~/.ssh/"))
+        assert "error" in result
+        assert "Access denied" in result["error"]
+
+    def test_blocks_aws_directory(self):
+        from tools.file_tools import search_tool
+        result = json.loads(search_tool(pattern="token", path="~/.aws/"))
+        assert "error" in result
+        assert "Access denied" in result["error"]
 
 
 
