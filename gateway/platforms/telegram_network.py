@@ -135,6 +135,13 @@ def _normalize_fallback_ips(values: Iterable[str]) -> list[str]:
         if addr.version != 4:
             logger.warning("Ignoring non-IPv4 Telegram fallback IP: %s", raw)
             continue
+        # Positive allowlist: only globally-routable unicast IPs.
+        # is_private alone misses CGNAT (100.64.0.0/10) in Python <3.11 and
+        # misses multicast (224.0.0.0/4) in all versions (is_global is True
+        # for some multicast ranges, but they are not legitimate Telegram IPs).
+        if not addr.is_global or addr.is_multicast:
+            logger.warning("Ignoring non-public Telegram fallback IP: %s", raw)
+            continue
         normalized.append(str(addr))
     return normalized
 

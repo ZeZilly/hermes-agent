@@ -115,6 +115,18 @@ class TestNormalizeFallbackIps:
     def test_empty_strings_skipped(self):
         assert tnet._normalize_fallback_ips(["", "  ", "149.154.167.220"]) == ["149.154.167.220"]
 
+    def test_rejects_cgnat(self, caplog):
+        """CGNAT range 100.64.0.0/10 must be rejected (not globally routable)."""
+        ips = tnet._normalize_fallback_ips(["100.64.0.1"])
+        assert ips == []
+        assert "non-public" in caplog.text
+
+    def test_rejects_multicast(self, caplog):
+        """Multicast 224.x.x.x has is_global=True in CPython but must still be rejected."""
+        ips = tnet._normalize_fallback_ips(["224.0.0.1"])
+        assert ips == []
+        assert "non-public" in caplog.text
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Request rewriting

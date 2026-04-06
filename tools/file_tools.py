@@ -23,6 +23,39 @@ def _is_expected_write_exception(exc: Exception) -> bool:
     return False
 
 
+_SENSITIVE_HOME_DIRS = (".ssh", ".aws", ".gnupg", ".kube", ".docker", ".azure", ".config/gh")
+_SENSITIVE_HOME_FILES = (
+    ".ssh/authorized_keys", ".ssh/id_rsa", ".ssh/id_ed25519", ".ssh/config",
+    ".bashrc", ".zshrc", ".profile", ".bash_profile", ".zprofile",
+    ".netrc", ".pgpass", ".npmrc", ".pypirc",
+)
+
+
+def _check_sensitive_read_path(path_str: str) -> str | None:
+    """Return an error message when *path_str* resolves into a protected credential
+    area (~/.ssh, ~/.aws, ~/.docker, ~/.azure, etc.)  Returns None if allowed."""
+    import os as _os
+    import pathlib as _pathlib
+    _path = _pathlib.Path(path_str).expanduser().resolve()
+    _home = _pathlib.Path(_os.path.expanduser("~")).resolve()
+    for rel in _SENSITIVE_HOME_FILES:
+        if _path == _home / rel:
+            return (
+                f"Access denied: '{path_str}' is a sensitive credential file "
+                "and cannot be read by the agent."
+            )
+    for rel in _SENSITIVE_HOME_DIRS:
+        try:
+            _path.relative_to(_home / rel)
+            return (
+                f"Access denied: '{path_str}' is inside a protected credential "
+                f"directory (~/{rel}) and cannot be read by the agent."
+            )
+        except ValueError:
+            continue
+    return None
+
+
 _file_ops_lock = threading.Lock()
 _file_ops_cache: dict = {}
 
@@ -190,6 +223,9 @@ def read_file_tool(path: str, offset: int = 1, limit: int = 500, task_id: str = 
                 })
             except ValueError:
                 pass
+        _sensitive_err = _check_sensitive_read_path(path)
+        if _sensitive_err:
+            return json.dumps({"error": _sensitive_err})
         file_ops = _get_file_ops(task_id)
         result = file_ops.read_file(path, offset, limit)
         if result.content:
@@ -336,6 +372,9 @@ def search_tool(pattern: str, target: str = "content", path: str = ".",
                 task_id: str = "default") -> str:
     """Search for content or files."""
     try:
+        _sensitive_err = _check_sensitive_read_path(path)
+        if _sensitive_err:
+            return json.dumps({"error": _sensitive_err})
         # Track searches to detect *consecutive* repeated search loops.
         # Include pagination args so users can page through truncated
         # results without tripping the repeated-search guard.
