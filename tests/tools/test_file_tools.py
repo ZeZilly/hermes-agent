@@ -402,6 +402,15 @@ class TestReadFileSensitiveGuardIntegration:
         assert "error" in result
         assert "Access denied" in result["error"]
 
+    def test_blocks_hermes_env_file(self):
+        """T4: HERMES_HOME/.env must be blocked (profile-aware via HERMES_HOME env var)."""
+        import os
+        from tools.file_tools import read_file_tool
+        hermes_env = os.path.join(os.environ["HERMES_HOME"], ".env")
+        result = json.loads(read_file_tool(hermes_env))
+        assert "error" in result
+        assert "Access denied" in result["error"]
+
 
 class TestSearchSensitiveGuardIntegration:
     """search_tool must return access-denied JSON when path points into a credential dir."""

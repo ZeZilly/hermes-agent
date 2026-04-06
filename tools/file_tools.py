@@ -201,17 +201,35 @@ def clear_file_ops_cache(task_id: str = None):
 def read_file_tool(path: str, offset: int = 1, limit: int = 500, task_id: str = "default") -> str:
     """Read a file with pagination and line numbers."""
     try:
-        # Security: block direct reads of internal Hermes cache/index files
-        # to prevent prompt injection via catalog or hub metadata files.
+        # ── SECURITY SURFACE MAP ────────────────────────────────────────────
+        # Three protection layers are active for read_file and search_files:
+        #
+        #  Layer A — Home credential directories / files
+        #    Enforced by _check_sensitive_read_path() (below).
+        #    Covers: .ssh/, .aws/, .gnupg/, .kube/, .docker/, .azure/,
+        #            .config/gh/ and exact files listed in _SENSITIVE_HOME_FILES
+        #
+        #  Layer B — HERMES_HOME secrets  (T4)
+        #    Enforced by _blocked_dirs below: HERMES_HOME/.env
+        #    Contains API keys and tokens loaded at runtime.
+        #
+        #  Layer C — Hermes internal cache  (prompt-injection guard)
+        #    Enforced by _blocked_dirs below: HERMES_HOME/skills/.hub/
+        #    Prevents the agent from reading its own tool-catalog metadata.
+        #
+        #  Parallel guard for @file attachments lives in:
+        #    agent/context_references.py :: _build_context_references()
+        #    → blocked_exact / blocked_prefix sets must stay in parity.
+        # ────────────────────────────────────────────────────────────────────
         import pathlib as _pathlib
         from hermes_constants import get_hermes_home as _get_hh
         _resolved = _pathlib.Path(path).expanduser().resolve()
         _hermes_home = _get_hh().resolve()
-        _blocked_dirs = [
+        _blocked_hub = [
             _hermes_home / "skills" / ".hub" / "index-cache",
             _hermes_home / "skills" / ".hub",
         ]
-        for _blocked in _blocked_dirs:
+        for _blocked in _blocked_hub:
             try:
                 _resolved.relative_to(_blocked)
                 return json.dumps({
@@ -223,6 +241,14 @@ def read_file_tool(path: str, offset: int = 1, limit: int = 500, task_id: str = 
                 })
             except ValueError:
                 pass
+        # T4: HERMES_HOME/.env credential guard
+        if _resolved == (_hermes_home / ".env").resolve():
+            return json.dumps({
+                "error": (
+                    f"Access denied: '{path}' is the Hermes secrets file "
+                    "and cannot be read by the agent."
+                )
+            })
         _sensitive_err = _check_sensitive_read_path(path)
         if _sensitive_err:
             return json.dumps({"error": _sensitive_err})
