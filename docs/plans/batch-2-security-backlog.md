@@ -1,104 +1,209 @@
 # Batch-2 Security Backlog
 
 Tracked items identified during the Layer 1 security backport review (PR #1,
-merged `95b5a543`). None of these are blockers for what was merged; all are
-improvements to harden the same surfaces further.
+merged `95b5a543`). None are blockers; all harden the same surfaces further.
+
+**Branch:** `batch-2-security` (based on `main` @ `95b5a543`)  
+**Commit cadence:** one small PR per task group (T1+T2 together, T3 alone,
+T4+T5 together). No long-lived branch accumulation.
 
 ---
 
-## Item 1 — Approval messaging alignment: `allow_permanent` flag in gateway
+## Task Map
 
-**Surface:** `gateway/run.py`, `tools/approval.py`, gateway platform base  
-**Severity:** MEDIUM (misleading UX, not a bypass)
+| ID  | Title                                        | Severity   | Files touched                              | Status |
+|-----|----------------------------------------------|------------|--------------------------------------------|--------|
+| T1  | `allow_permanent` flag in gateway prompt     | MEDIUM     | `gateway/run.py`, `tools/approval.py`      | open   |
+| T2  | New test: Tirith-backed prompt hides "always"| MEDIUM     | `tests/gateway/test_approve_deny_commands.py` | open |
+| T3  | `_check_sensitive_read_path` unit tests      | LOW        | `tests/tools/test_file_tools.py`           | open   |
+| T4  | Add `HERMES_HOME/.env` to read guard         | LOW-MEDIUM | `tools/file_tools.py`                      | open   |
+| T5  | Surface-map comment + parity audit           | LOW        | `tools/file_tools.py`                      | open   |
 
-**Problem:**  
-`gateway/run.py` ~L4424 and ~L5486 advertise `/approve always` as "permanent"
-in the approval prompt. However when any pending approval was triggered by a
-Tirith-backed warning, `choice == "always"` falls back to `approve_session()`
-only — the allowlist is not written. The CLI correctly suppresses the permanent
-option via `allow_permanent=False`; the gateway does not carry this flag.
+---
 
-**Proposed fix:**  
-Thread `allow_permanent: bool` through the approval payload. Suppress the
-"always" option text in the gateway prompt when any warning is Tirith-backed.
+## T1 — Thread `allow_permanent` flag into gateway approval prompt
+
+**Surface:** `gateway/run.py` · `tools/approval.py` · `gateway/platforms/base.py`  
+**Severity:** MEDIUM (misleading UX — not a security bypass, but implies a
+capability that does not exist for Tirith-backed warnings)
+
+**Root cause:**  
+`gateway/run.py` builds the approval prompt text unconditionally including the
+line that advertises `/approve always`. When the pending command was flagged by
+a Tirith-backed warning, `choice == "always"` falls back silently to
+`approve_session()` — the permanent allowlist is never written. The CLI avoids
+this by passing `allow_permanent=False` through to the prompt builder;
+the gateway skips this flag entirely.
+
+**File-level changes:**
+
+`tools/approval.py`
+- `build_approval_prompt(…, allow_permanent: bool = True)` — add the parameter
+- When `allow_permanent=False`, omit the "always" line from the returned string
+
+`gateway/run.py`
+- Detect whether any pending warning is Tirith-backed before constructing the
+  approval payload
+- Pass `allow_permanent=False` to `build_approval_prompt` in that case
+
+`gateway/platforms/base.py`
+- Confirm `allow_permanent` is forwarded if the base class constructs prompts
 
 **Acceptance criteria:**
-- [ ] `allow_permanent=False` suppresses "always" text in gateway approval prompt
-- [ ] Existing approval tests still pass
-- [ ] New test: Tirith-backed warning → prompt does not contain "always"
+- [ ] `allow_permanent=False` → "always" text absent from gateway approval prompt
+- [ ] `allow_permanent=True` (default) → no change to existing prompt text
+- [ ] All existing approval tests still pass
 
 ---
 
-## Item 2 — `_check_sensitive_read_path` unit tests (exposure smoke test)
+## T2 — Test: Tirith-backed warning suppresses "always" in gateway prompt
+
+**Surface:** `tests/gateway/test_approve_deny_commands.py`  
+**Depends on:** T1
+
+**New test cases to add:**
+
+```python
+def test_tirith_backed_warning_hides_always_option(…):
+    # Arrange: approval triggered by Tirith-classified warning
+    # Act: capture the approval prompt text sent to platform
+    # Assert: "/approve always" not present in prompt
+    # Assert: "/approve" and "/deny" still present
+
+def test_non_tirith_warning_shows_always_option(…):
+    # Assert: "/approve always" IS present when warning is not Tirith-backed
+```
+
+**Acceptance criteria:**
+- [ ] Both tests pass
+- [ ] No mock leakage into other test classes
+
+---
+
+## T3 — `_check_sensitive_read_path` parametrized unit tests
+
+**Surface:** `tests/tools/test_file_tools.py`  
+**Severity:** LOW (guard exists; regression coverage missing)
+
+**Blocked paths (must return `{"error": "Access denied: …"}`):**
+
+| Path                            | Reason                     |
+|---------------------------------|----------------------------|
+| `~/.ssh/id_rsa`                 | Exact file match           |
+| `~/.ssh/config`                 | Exact file match           |
+| `~/.aws/credentials`            | Exact file match           |
+| `~/.docker/config.json`         | Exact file match           |
+| `~/.azure/accessTokens.json`    | Exact file match           |
+| `~/.config/gh/hosts.yml`        | Exact file match           |
+| `~/.ssh/custom_key`             | Directory prefix match     |
+| `~/.ssh/subdirectory/id_rsa`    | Deep subpath match         |
+
+**Allowed paths (must pass through to normal I/O, mocked):**
+
+| Path                            |
+|---------------------------------|
+| `~/projects/myapp/config.py`    |
+| `/tmp/testfile.txt`             |
+| `~/Documents/notes.md`          |
+
+**Edge cases:**
+
+| Scenario                                          | Expected result |
+|---------------------------------------------------|-----------------|
+| Symlink in workspace → resolves to `~/.ssh/id_rsa`| blocked         |
+| `../../.ssh/id_rsa` relative to CWD               | blocked after `.resolve()` |
+
+**Also cover `search_tool`:**
+- `path="~/.ssh/"` → returns access-denied JSON, not a file listing
+
+**Acceptance criteria:**
+- [ ] Parametrized `test_blocks_sensitive_paths[…]` covers all rows above
+- [ ] Parametrized `test_allows_safe_paths[…]` covers allowed paths
+- [ ] Symlink + relative path edge cases as distinct test functions
+- [ ] 100 % branch coverage on `_check_sensitive_read_path`
+
+---
+
+## T4 — Add `HERMES_HOME/.env` to `_check_sensitive_read_path`
 
 **Surface:** `tools/file_tools.py`  
-**Severity:** LOW (guard exists, test coverage missing)
-
-**Problem:**  
-`_check_sensitive_read_path()` was added in the Layer 1 batch but has no
-dedicated unit tests. A regression could silently re-open the credential
-exfiltration path.
-
-**Proposed additions in `tests/tools/test_file_tools.py`:**
-
-Parametrized test covering paths that MUST be blocked:
-- `~/.ssh/id_rsa`
-- `~/.ssh/config`
-- `~/.aws/credentials`
-- `~/.docker/config.json`
-- `~/.azure/accessTokens.json`
-- `~/.config/gh/hosts.yml`
-- A file nested inside `~/.ssh/` (subdir case)
-
-Paths that MUST pass through (not blocked):
-- `~/projects/myapp/config.py`
-- `/tmp/testfile.txt`
-
-Also cover `search_tool` with `path` pointing to `~/.ssh/` — must return
-access-denied JSON, not a file listing.
-
-Edge cases:
-- Symlink in workspace resolving to `~/.ssh/id_rsa` → blocked
-- Relative path `../../.ssh/id_rsa` from CWD → blocked after resolve
-
-**Acceptance criteria:**
-- [ ] All blocked paths return `{"error": "Access denied: ..."}` JSON
-- [ ] All allowed paths proceed to normal I/O (mocked)
-- [ ] Symlink and relative-path edge cases covered
-
----
-
-## Item 3 — `HERMES_HOME/.env` and remaining unguarded read surfaces
-
-**Surface:** `tools/file_tools.py`, `_check_sensitive_read_path`  
 **Severity:** LOW-MEDIUM
 
-**Problem:**  
-`agent/context_references.py` blocks `HERMES_HOME/.env` for `@file` attachment
-(`blocked_exact.add(hermes_home / ".env")`). The new `_check_sensitive_read_path`
-function in `file_tools.py` covers home-dir credential directories but does not
-currently include `HERMES_HOME/.env`.
+**Gap:**  
+`agent/context_references.py` blocks `HERMES_HOME/.env` for the `@file`
+attachment path (`blocked_exact.add(hermes_home / ".env")`).  
+`_check_sensitive_read_path` in `file_tools.py` only guards home-directory
+credential directories; `HERMES_HOME/.env` (which holds API keys) is not
+covered when accessed through `read_file` or `search_files`.
 
-Additionally, the existing Hermes-cache guard (skills/.hub) should be confirmed
-to have parity with `_check_sensitive_read_path` — one should not supersede the
-other.
+**Change in `tools/file_tools.py`:**
 
-**Proposed work:**
-1. Add `HERMES_HOME/.env` to `_check_sensitive_read_path` via `get_hermes_home()`
-2. Audit: confirm skills/.hub block (existing) + home credential block (new) +
-   HERMES_HOME/.env block (proposed) are non-overlapping and collectively
-   exhaustive for all known sensitive surfaces
-3. Document the surface map in a comment at the top of `_check_sensitive_read_path`
+```python
+# Inside _check_sensitive_read_path, after home-dir checks:
+from hermes_constants import get_hermes_home
+_hermes_env = get_hermes_home() / ".env"
+if _path == _hermes_env.resolve():
+    return f"Access denied: '{path_str}' is the Hermes secrets file."
+```
 
 **Acceptance criteria:**
-- [ ] `read_file("~/.hermes/.env")` returns access-denied JSON
-- [ ] `_check_sensitive_read_path` has an inline comment listing all protected
-  surface categories
-- [ ] No test regression
+- [ ] `read_file(str(get_hermes_home() / ".env"))` → access-denied JSON
+- [ ] Profile isolation: path resolves per active `HERMES_HOME`, not hardcoded
+- [ ] New test added (fits in T3 test file under a separate class)
 
 ---
 
-## Test command reference (as of Batch-1)
+## T5 — Surface-map comment and parity audit
+
+**Surface:** `tools/file_tools.py` (comment only, no logic change)  
+**Depends on:** T4
+
+**Goal:**  
+Make the three protection layers explicit so future contributors understand
+the full picture without grepping multiple files.
+
+**Add a block comment above `_check_sensitive_read_path`:**
+
+```python
+# Protected read surfaces (three layers — keep in sync):
+#
+#  Layer A — Home credential directories / files  (this function)
+#    .ssh/, .aws/, .gnupg/, .kube/, .docker/, .azure/, .config/gh/
+#    and their exact-file counterparts listed in _SENSITIVE_HOME_FILES
+#
+#  Layer B — HERMES_HOME secrets  (this function, T4)
+#    HERMES_HOME/.env  (API keys and tokens)
+#
+#  Layer C — Hermes internal cache  (existing guard in read_file_tool)
+#    HERMES_HOME/skills/.hub  (skills cache)
+#
+#  @file attachment path has its own parallel guard in:
+#    agent/context_references.py :: _build_context_references()
+#    → blocked_exact and blocked_prefix sets must stay in parity with above
+```
+
+**Acceptance criteria:**
+- [ ] Comment present and accurate after T4 is applied
+- [ ] No logic change; diff is comment-only
+- [ ] `context_references.py` parity confirmed (no new guard needed there,
+  just documented)
+
+---
+
+## PR plan
+
+| PR   | Tasks | Title                                              |
+|------|-------|----------------------------------------------------|
+| PR-A | T1+T2 | `fix(gateway): suppress allow_permanent in Tirith-backed approval prompts` |
+| PR-B | T3    | `test(file_tools): parametrized coverage for _check_sensitive_read_path`   |
+| PR-C | T4+T5 | `security(file_tools): guard HERMES_HOME/.env + surface-map comment`       |
+
+Each PR targets `main` directly; `batch-2-security` is the working branch
+for all three.
+
+---
+
+## Test command reference
 
 ```bash
 # Always use --frozen to avoid mutating uv.lock during test runs
