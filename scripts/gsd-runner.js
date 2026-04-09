@@ -33,12 +33,15 @@ const LOCK_FILE = path.join('/workspace/project-ecosystem', '.runner.lock');
 
 const { processInbox, sendFeedback } = require('./hermez-adapter');
 
+// Whitelist'e ekle
 const COMMAND_WHITELIST = [
     'echo',
     'git pull',
     'git status',
     'git log',
+    'git reset',
     'npm install',
+    'npm prune',
     'ls',
     'df -h',
     'uname -a',
@@ -66,7 +69,15 @@ async function runGSD() {
     try {
         console.log('🚀 GSD-OpenClaw Runner (Industrial Grade) Başlatıldı...');
         
-        // Önce Her-Me-Z Inbox'ını işle
+        // Önce Bakım Motorunu çalıştır (Yeni Planlar Üretebilir)
+        try {
+            const maintenance = require('./maintenance-engine');
+            // maintenance-engine.js içinde kendini çağıran bir yapı olduğu için import yeterli
+        } catch (mErr) {
+            console.error('⚠️ Bakım Motoru çalıştırılamadı:', mErr.message);
+        }
+
+        // Sonra Her-Me-Z Inbox'ını işle
         processInbox();
         
         const state = loadState();

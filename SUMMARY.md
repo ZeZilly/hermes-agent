@@ -1,7 +1,7 @@
 # GSD EKOSİSTEM ÖZETİ (SUMMARY)
 
-📅 **Son Güncelleme:** 09.04.2026 21:19:57
-🔄 **Son Çalıştırma:** 2026-04-09T19:19:57.875Z
+📅 **Son Güncelleme:** 09.04.2026 21:25:03
+🔄 **Son Çalıştırma:** 2026-04-09T19:25:03.313Z
 
 ## 📈 Genel İstatistikler
 - **Toplam Plan Sayısı:** 5
