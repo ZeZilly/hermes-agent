@@ -1,0 +1,5 @@
+<task>
+  <name>Her-Me-Z System Audit</name>
+  <id>hermez-task-001</id>
+  <action>git log -n 5 --oneline</action>
+</task>

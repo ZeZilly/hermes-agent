@@ -1,5 +1,5 @@
 {
-  "last_run": "2026-04-09T18:52:56.804Z",
+  "last_run": "2026-04-09T18:54:19.490Z",
   "processed_plans": {
     "task_001_initial_test.xml": {
       "hash": "353b55b354a57510240f4d44db8edeb5ac1138de05e1faa813465a5cf28689f3",
@@ -15,6 +15,11 @@
       "hash": "69fe6edf3bde7b81a805e3afc8633616af625e0d36fdf7e80bf8ae0540b6a631",
       "status": "COMPLETED",
       "updated_at": "2026-04-09T18:52:56.782Z"
+    },
+    "hermez_hermez-task-001.xml": {
+      "hash": "ab86a165b36143b15aa8bc9a62eff2a7debf9be6aea5d8503c8a9c7e5ce62c58",
+      "status": "COMPLETED",
+      "updated_at": "2026-04-09T18:54:19.430Z"
     }
   }
 }
