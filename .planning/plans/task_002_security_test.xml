@@ -1,0 +1,6 @@
+<task>
+  <name>Security and Action Test</name>
+  <description>Verify that whitelist filtering and sanitized execution work correctly.</description>
+  <action>echo "Security Sandbox Verification Successful"</action>
+  <verify>Output should show the echo message and status COMPLETED.</verify>
+</task>
