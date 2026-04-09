@@ -1,0 +1,6 @@
+{
+  "plan": "task_001_initial_test.xml",
+  "executed_at": "2026-04-09T18:01:20.351Z",
+  "status": "ready_for_execution",
+  "note": "Bu bir adaptör iskeletidir. Gerçek infaz için 'ask' onayı ve tool-call entegrasyonu gereklidir."
+}

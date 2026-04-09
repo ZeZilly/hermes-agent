@@ -1,0 +1,6 @@
+<task>
+  <name>Initial GSD Test Task</name>
+  <description>Verify the GSD-OpenClaw adapter can read and parse tasks.</description>
+  <action>echo "GSD Powering OpenClaw"</action>
+  <verify>Check for the execution log in .planning/LOGS/</verify>
+</task>

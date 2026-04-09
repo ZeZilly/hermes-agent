@@ -1,0 +1,486 @@
+{
+  "baseline_id": "vbaseline-2026-04-09T17-50-00-059Z",
+  "commit": "546eb100e345b4b2824ca5bb70c7572f939b137e",
+  "created_at": "2026-04-09T17:50:00.074Z",
+  "files": [
+    {
+      "path": ".dockerignore",
+      "sha256": "fdab3ee736026ef26ba5420e3835fd839b7528f11d3f2783a12835bebd0745e9",
+      "mode": "100644",
+      "size": 276
+    },
+    {
+      "path": ".env.example",
+      "sha256": "3cd4a2a01ee229ab2f7d713f10133934af5f239478ff28d78cce6d0377104081",
+      "mode": "100644",
+      "size": 220
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "74749e7b2fc6816dd09a0493131b756ef0d09f84846611515be61aacb8c5e1db",
+      "mode": "100644",
+      "size": 302
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "1965ca16954b5ab0ec0b580540fba514f1965d9f8d3dbb6ba91a4cb00cc8a60f",
+      "mode": "100644",
+      "size": 1004
+    },
+    {
+      "path": "compose.env.example",
+      "sha256": "abda15252465b8d85e7b4bcc0d2b29e3feca98dfd0b1bed50a422a9dd06ef186",
+      "mode": "100644",
+      "size": 1144
+    },
+    {
+      "path": "compose.host-admin.yaml",
+      "sha256": "6a4d5394d033279100ce4987d7bc2fb1ed98c010edca7b5158b9193b5b1a5dce",
+      "mode": "100644",
+      "size": 640
+    },
+    {
+      "path": "compose.yaml",
+      "sha256": "615dfe064b839b80c761a78d6c4492cd0cd859a012468e4adfaa4e7892ca65d8",
+      "mode": "100644",
+      "size": 1767
+    },
+    {
+      "path": "config/auth-profiles.azure.template.json",
+      "sha256": "fc679cf66c84ed182fb742fa5183e615a33984d1ee77fc24fac7ca537ee8a3e1",
+      "mode": "100644",
+      "size": 476
+    },
+    {
+      "path": "config/auth-profiles.template.json",
+      "sha256": "04dfc36909b1cb9e188e73401efd6980553ee6a558150849830b6c46cc84230b",
+      "mode": "100644",
+      "size": 273
+    },
+    {
+      "path": "config/openclaw.container.template.json",
+      "sha256": "d62dc8ed0d96d367660c8357b043f745ad1c4300334e5e49e4dbb064c43fbcd6",
+      "mode": "100644",
+      "size": 17152
+    },
+    {
+      "path": "config/openclaw.template.json",
+      "sha256": "a5f121999e808125b2b690cda82ec34121e87f51caeed9ac5980797a2841617b",
+      "mode": "100644",
+      "size": 17558
+    },
+    {
+      "path": "docker/entrypoint.sh",
+      "sha256": "45c49f2e92fca217807b533f2aac995c3b7daeb02adb7e848f92396e3a639a42",
+      "mode": "100755",
+      "size": 1227
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "28e96297a794ce3ac258802aea320297996420002f7d89e63218f8bf1d9642f5",
+      "mode": "100644",
+      "size": 1534
+    },
+    {
+      "path": "docs/archive-policy.md",
+      "sha256": "fca4dd80f12a09cff170e3a6ba27ae91289303d39aa4bd5518eff7eac9a4dc3a",
+      "mode": "100644",
+      "size": 803
+    },
+    {
+      "path": "docs/export-scope.md",
+      "sha256": "c0b9c265f391caf6b8b882c3ca63af392687dbc74197bb834b32646c166ed4eb",
+      "mode": "100644",
+      "size": 931
+    },
+    {
+      "path": "docs/path-layout.md",
+      "sha256": "9794c6979372323112efe9ab9551ea2b9ee12ef9e159432cab5024de78dc20fc",
+      "mode": "100644",
+      "size": 1631
+    },
+    {
+      "path": "docs/subagents.md",
+      "sha256": "ac960c9c768cd3ba67b6b683e8380e80079d0b34fddf778314658c2ce0dd2a95",
+      "mode": "100644",
+      "size": 7118
+    },
+    {
+      "path": "docs/vm-docker-setup.md",
+      "sha256": "3ad97dca9b82ac1e32f108e417c363eedb74b93a1ec9aa86418a9be89588e61e",
+      "mode": "100644",
+      "size": 3698
+    },
+    {
+      "path": "HEARTBEAT.md",
+      "sha256": "5fcb3f73e9a93380e72277856e1d0786d7627d1bee051a5443531cebb7bd41c1",
+      "mode": "100644",
+      "size": 192
+    },
+    {
+      "path": "IDENTITY.md",
+      "sha256": "9c0651a517527b872c431c569a6108c517aec3d2f80236dc0df16251fb9a32d4",
+      "mode": "100644",
+      "size": 206
+    },
+    {
+      "path": "MEMORY.md",
+      "sha256": "c58c38603b6b258bce95b876fff88023d5fff8aecdd95f4583a2eb461c052453",
+      "mode": "100644",
+      "size": 212
+    },
+    {
+      "path": "prompts/5-dakikalik-senkron-test.md",
+      "sha256": "eaf94cb20515c9d440fac198a387ab131c2d08e16130007470ee505b79d4e7c8",
+      "mode": "100644",
+      "size": 2242
+    },
+    {
+      "path": "prompts/local-sub-agent-bridge-smoke-test.md",
+      "sha256": "18e6765a4e2ed8637677c1c8926cdb263d10b8e157c324a5104a740535819438",
+      "mode": "100644",
+      "size": 1102
+    },
+    {
+      "path": "prompts/local-sub-agent-bridge-split-test.md",
+      "sha256": "9b31b2d62a8274ec9031a3a79e0d92eadc8aa3ddef4e0a615c108b1883e71f46",
+      "mode": "100644",
+      "size": 1333
+    },
+    {
+      "path": "README.md",
+      "sha256": "e81af03a64b387c408e7dfb659e6df910a125dd7aa29443e66a09698c82df392",
+      "mode": "100644",
+      "size": 3659
+    },
+    {
+      "path": "scripts/archive-to-staging.sh",
+      "sha256": "595f10f6e86015971dd8d02e1943005efad17a97c8853aefdd267a1fc4a0dde0",
+      "mode": "100755",
+      "size": 4748
+    },
+    {
+      "path": "scripts/archive-weekly-review.sh",
+      "sha256": "672f5a6f24d6f7acbc7757cb5d4b9964b36e2e5447b0f678e7d744f58e0f621c",
+      "mode": "100755",
+      "size": 1519
+    },
+    {
+      "path": "scripts/bootstrap-vm-docker.sh",
+      "sha256": "44ac6a60c9dc1787ea51632df284dc89ff86c3f71c0ce59d7bcf4ea2ae45da15",
+      "mode": "100755",
+      "size": 2254
+    },
+    {
+      "path": "scripts/check-runtime.sh",
+      "sha256": "9d127c05e7366ac01950eaee195947a0838a27bdfa0145740308c0481aed3931",
+      "mode": "100755",
+      "size": 127
+    },
+    {
+      "path": "scripts/install-vm-systemd.sh",
+      "sha256": "19e3ac264b125d8d34b317b648db75b947e1ee9126002b02968a9d161f1a7afc",
+      "mode": "100755",
+      "size": 3024
+    },
+    {
+      "path": "scripts/render-container-config.sh",
+      "sha256": "4b8200686405992a476325a369d7ee459a06f1f05b6a87f141ddb6611d029206",
+      "mode": "100755",
+      "size": 941
+    },
+    {
+      "path": "scripts/run-compose-stack.sh",
+      "sha256": "113b3c073c7d251e3ba72da2c954b4c77c41d3bfe134ab398edd459b8f623edc",
+      "mode": "100755",
+      "size": 1069
+    },
+    {
+      "path": "scripts/sync-auth-profiles.sh",
+      "sha256": "c65b9ab2bf82ce6095cd1940c5261d1bfb71a416cbd273a60c86471689fbcdcf",
+      "mode": "100755",
+      "size": 1574
+    },
+    {
+      "path": "scripts/verify-container-paths.sh",
+      "sha256": "d75a0e78f9436018ffdae7ec4a1cc8b65ebfa29389406b21422e0ba5071f9e60",
+      "mode": "100755",
+      "size": 1236
+    },
+    {
+      "path": "scripts/verify-vm-paths.sh",
+      "sha256": "70b9dc8b32a6183f95112e42ce1735dc89c00683185ad4254f92cc825bc8c0ad",
+      "mode": "100755",
+      "size": 5796
+    },
+    {
+      "path": "skills/automation-workflows/SKILL.md",
+      "sha256": "7e2a1b38c6f3558f8f373e45eee3e70d7c2d531cbe922d36a9c24a507d8ccb43",
+      "mode": "100600",
+      "size": 10358
+    },
+    {
+      "path": "skills/electron-upgrade-advisor/SKILL.md",
+      "sha256": "c7240fafe03911202d47891df50ba68f61ad6db9afa465d3252039d3f14c14e6",
+      "mode": "100644",
+      "size": 1231
+    },
+    {
+      "path": "skills/github-cli/SKILL.md",
+      "sha256": "45b9172dd0c8d5a200599daafe32bd3abe2bda0c5e3e5733fbb6020b4fb3cda4",
+      "mode": "100600",
+      "size": 44890
+    },
+    {
+      "path": "skills/n8n-mcp-automation-bridge/SKILL.md",
+      "sha256": "d87aab31a6c913600b277ec93c1fbd4636cd7af0e5b3c0965430a3e951a76b0b",
+      "mode": "100644",
+      "size": 1454
+    },
+    {
+      "path": "skills/nextjs-cache-optimizer/SKILL.md",
+      "sha256": "671aac963f728ef0b61dce67ec41e6b529da3397ed2e4c31e7e70ddb74f2e0a4",
+      "mode": "100644",
+      "size": 1341
+    },
+    {
+      "path": "skills/playwright-browser-ui-tester/SKILL.md",
+      "sha256": "4c9c93c7cc8f124234c57f141f74a54f99768bc6666ea8710cbe86d9f1d1a189",
+      "mode": "100644",
+      "size": 1287
+    },
+    {
+      "path": "skills/prompt-lookup/SKILL.md",
+      "sha256": "1cfb51e7f435fe6f7ee8c81c271b9b1042ac6d79ad58e79005d6bc0af625e97a",
+      "mode": "100644",
+      "size": 1033
+    },
+    {
+      "path": "skills/ruflo-toolkit/SKILL.md",
+      "sha256": "cbd3f4c3694191eea8b901d9542d541b1d0094b7b0eebe89c3580ce5a1b22afb",
+      "mode": "100644",
+      "size": 1633
+    },
+    {
+      "path": "skills/self-healing-code-fixer/SKILL.md",
+      "sha256": "304278ad8567f96b631d8068afe81f119a56958a02a13ded7b2c24b2a3307812",
+      "mode": "100644",
+      "size": 1295
+    },
+    {
+      "path": "skills/vibe-coding/pitfalls.md",
+      "sha256": "4f826c72b15406b6d382f0eabb3fed0b99ee6eeabdb1410b58705b3f570a9eb3",
+      "mode": "100600",
+      "size": 3064
+    },
+    {
+      "path": "skills/vibe-coding/prompting.md",
+      "sha256": "d4f75112e582990a789d55657808210682377f4fca9e395f714c988054c1ecc5",
+      "mode": "100600",
+      "size": 2446
+    },
+    {
+      "path": "skills/vibe-coding/rules-files.md",
+      "sha256": "061c8415da56e2ea33383a555c4ed8f50ce9bffe62f012c32a10662611aeee06",
+      "mode": "100600",
+      "size": 2660
+    },
+    {
+      "path": "skills/vibe-coding/SKILL.md",
+      "sha256": "dde54339ba4fdb4f0761d998c3a3a74d434c837be2ed4336928075f9b34bf81e",
+      "mode": "100600",
+      "size": 3473
+    },
+    {
+      "path": "skills/vibe-coding/tools.md",
+      "sha256": "42309bff4a5a188ff1107c0cccd2c6c5b014e089e1146171c41867b473a6ddab",
+      "mode": "100600",
+      "size": 2949
+    },
+    {
+      "path": "skills/vibe-coding/workflow.md",
+      "sha256": "473215018879c809ae776a05ef426ef7112347e9cba7595c86e8ef2572a3ac21",
+      "mode": "100600",
+      "size": 2122
+    },
+    {
+      "path": "skills/web-design-audit/SKILL.md",
+      "sha256": "a6f2042333e7d140eddd492a1dd94907ea1dd5c588bef73d670cb47f96f0c4d8",
+      "mode": "100644",
+      "size": 1338
+    },
+    {
+      "path": "skills/web-scraping/SKILL.md",
+      "sha256": "729b45e380e047077a937216c47c3e9c41ce5041b6f55593c9871f87200c2061",
+      "mode": "100600",
+      "size": 2329
+    },
+    {
+      "path": "systemd/zlaw-archive-review.service.template",
+      "sha256": "48c7d4c1e0460b79a1b9cf6c8eb95b28c338916251566234761e8720ecc5a69e",
+      "mode": "100644",
+      "size": 244
+    },
+    {
+      "path": "systemd/zlaw-archive-review.timer.template",
+      "sha256": "5d6fec9d63a6c97901e087720920833206d4fd5610f6151d57f061778f607c00",
+      "mode": "100644",
+      "size": 171
+    },
+    {
+      "path": "systemd/zlaw-openclaw-docker.service.template",
+      "sha256": "758e4ece8aa8a8d7009d066d68d191d706bcdb9c78a51f4bfda0e883bf0abf79",
+      "mode": "100644",
+      "size": 495
+    },
+    {
+      "path": "vibe-coding/analytics-templates.md",
+      "sha256": "3539eec1c7cf5c17833bb411bb6bfe0ee808264d40799d975294bc2fa813afc4",
+      "mode": "100600",
+      "size": 19468
+    },
+    {
+      "path": "vibe-coding/ARCHIVED_AGENT_Z_DESIGN.md",
+      "sha256": "a50895f044a1676a26cecc36b51623d4141818cbc4247cc8310b5489eeeb40f5",
+      "mode": "100600",
+      "size": 2035
+    },
+    {
+      "path": "vibe-coding/dashboard-templates.md",
+      "sha256": "3bfca236abef5834969a0b42d5478c4f82e01354884c8d888a5991a17cda2803",
+      "mode": "100600",
+      "size": 22285
+    },
+    {
+      "path": "vibe-coding/docs/local-sub-agent-bridge.md",
+      "sha256": "471808d51680b0c07e2f0d44e0ea3d9315dad79c2fe2cf25d37f30f4bf87997d",
+      "mode": "100644",
+      "size": 3374
+    },
+    {
+      "path": "vibe-coding/github-code-generation.md",
+      "sha256": "d6fcedac7e806753e46cef21394843e48a601cb7e914ed8f530a7e3a2800a5ff",
+      "mode": "100600",
+      "size": 10597
+    },
+    {
+      "path": "vibe-coding/github-integration.md",
+      "sha256": "f361610dbea38820b9c3f483f06f32d39221b4834f669c1b5523a14754204074",
+      "mode": "100600",
+      "size": 8452
+    },
+    {
+      "path": "vibe-coding/github-issue-resolution.md",
+      "sha256": "ee643fb92a4b8ce39eff9f0218bbfa7b83cf62bd64edd8d37ac55c2e6f7433f1",
+      "mode": "100600",
+      "size": 8355
+    },
+    {
+      "path": "vibe-coding/github-pr-review.md",
+      "sha256": "f27b75772e101d4595d1b1931ee96d013c9a4f1f45ec62594a793980f6cf9119",
+      "mode": "100600",
+      "size": 9079
+    },
+    {
+      "path": "vibe-coding/guidelines.md",
+      "sha256": "1c93f1981cf2c173a622ada4134b840f8a190d8b21cedf852497d2d897288dbf",
+      "mode": "100600",
+      "size": 5902
+    },
+    {
+      "path": "vibe-coding/IMPLEMENTATION_CHECKLIST.md",
+      "sha256": "d49a432dbeabf6f75f1f6ed3ccb76be9a8ec68e758ca26ba32b893b91f777830",
+      "mode": "100644",
+      "size": 2299
+    },
+    {
+      "path": "vibe-coding/INTEGRATION.md",
+      "sha256": "560acef567ee55d2a9e2a5e8494c137c5e22c9038d11aed931c95c0ef24d4d91",
+      "mode": "100644",
+      "size": 4377
+    },
+    {
+      "path": "vibe-coding/marketplace-templates.md",
+      "sha256": "69fee887f3d717c87db08432300fb6f89f4bad78e624143d79e27a05cb5c23f5",
+      "mode": "100600",
+      "size": 18969
+    },
+    {
+      "path": "vibe-coding/memory/project-context.md",
+      "sha256": "71cab3e28149106cbeb21ff220ab966bb8b184ac2686dacffc0a79c0b134897f",
+      "mode": "100644",
+      "size": 256
+    },
+    {
+      "path": "vibe-coding/prompting.md",
+      "sha256": "a052a3f831dc51834e7888db029986f50b15fe60962c7c917363bb9cb0ddd1d5",
+      "mode": "100600",
+      "size": 4452
+    },
+    {
+      "path": "vibe-coding/README.md",
+      "sha256": "c219362f57af2bc5b811eee6aadb8de66f4e7b68f920057879c70656d49699b4",
+      "mode": "100644",
+      "size": 4200
+    },
+    {
+      "path": "vibe-coding/rules-templates.md",
+      "sha256": "f9dc0e313ec2c33a46d1c2b24044c96bfac0ba3416a4b26617382cff88aef475",
+      "mode": "100600",
+      "size": 9169
+    },
+    {
+      "path": "vibe-coding/skills/approval-decision.md",
+      "sha256": "5c01ee2e588df441d6ab3222c62b37c56a216c5c1c596a9790b74dea50787132",
+      "mode": "100600",
+      "size": 6380
+    },
+    {
+      "path": "vibe-coding/skills/artifact-fetch.md",
+      "sha256": "e6b7d51451ffb8cae70eebf60736887e11db0595e6f33938a8e6a2bd2916b84a",
+      "mode": "100600",
+      "size": 9556
+    },
+    {
+      "path": "vibe-coding/skills/publish-agent.md",
+      "sha256": "a07ca6db45823fcd3536fc58bf16da58e7eff9e2594f3e70a1d3a25ef4b6ff87",
+      "mode": "100600",
+      "size": 12956
+    },
+    {
+      "path": "vibe-coding/skills/repair-task.md",
+      "sha256": "b176e917497275308572128f453e461f6b9707025ca2eeb70d584d2f6f48c26c",
+      "mode": "100600",
+      "size": 9578
+    },
+    {
+      "path": "vibe-coding/skills/ruflo-toolkit.md",
+      "sha256": "563cd35c71cb7e494df37279b3b6ea61320a1f061bf70db5c48f9614abc84d2d",
+      "mode": "100644",
+      "size": 2318
+    },
+    {
+      "path": "vibe-coding/skills/run-agent.md",
+      "sha256": "42e47f4b842a2667d4dd871c372f08b9fcf92f57e78f05b664d7940cebd9e2da",
+      "mode": "100600",
+      "size": 4434
+    },
+    {
+      "path": "vibe-coding/workflows.md",
+      "sha256": "b458d17213a2bba9f9990e4cbab463a6780c79e32da396b136509e7eeb38d904",
+      "mode": "100600",
+      "size": 8194
+    },
+    {
+      "path": "vibe-coding/ZLAW_RUFLO_IMPLEMENTATION.md",
+      "sha256": "81608034065b9d018220cda467e34d85cc9e367f6d669d50b3fabce43e166ec0",
+      "mode": "100600",
+      "size": 4842
+    }
+  ],
+  "producer": {
+    "name": "gsd-baseline-generator",
+    "tool_version": "0.1.0"
+  },
+  "merkle_root": "ad4173f2a970d01c18622d2714e921ed23c385bb235da194543fed608b061953"
+}
