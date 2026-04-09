@@ -41,7 +41,9 @@ const COMMAND_WHITELIST = [
     'npm install',
     'ls',
     'df -h',
-    'uname -a'
+    'uname -a',
+    'cat',
+    'node'
 ];
 
 function sanitizeCommand(cmd) {

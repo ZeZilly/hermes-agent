@@ -1,0 +1,5 @@
+<task>
+  <name>Self-Healing & Mutation Test</name>
+  <id>mutation-test-001</id>
+  <action>node scripts/mutation-helper.js</action>
+</task>

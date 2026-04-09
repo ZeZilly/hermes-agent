@@ -1,0 +1,7 @@
+{
+  "plan": "hermez_mutation-test-001.xml",
+  "hash": "e34641e2669daa17c20b9c554b3651c002a2eed551d390dac6626bbe2ae54191",
+  "executed_at": "2026-04-09T19:19:37.529Z",
+  "status": "FAILED",
+  "error": "Command failed: node scripts/mutation-helper.js\nnode:internal/modules/cjs/loader:1459\n  throw err;\n  ^\n\nError: Cannot find module '/workspace/scripts/mutation-helper.js'\n    at Module._resolveFilename (node:internal/modules/cjs/loader:1456:15)\n    at defaultResolveImpl (node:internal/modules/cjs/loader:1066:19)\n    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1071:22)\n    at Module._load (node:internal/modules/cjs/loader:1242:25)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  code: 'MODULE_NOT_FOUND',\n  requireStack: []\n}\n\nNode.js v24.14.1\n"
+}
