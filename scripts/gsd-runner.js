@@ -125,7 +125,7 @@ async function runGSD() {
                         }
 
                         console.log(`🛠️ Komut Çalıştırılıyor: ${sanitizedCmd}`);
-                        const output = execSync(sanitizedCmd).toString();
+                        const output = execSync(sanitizedCmd, { cwd: '/workspace/project-ecosystem' }).toString();
                         console.log('--- ÇIKTI ---');
                         console.log(output);
                     }
