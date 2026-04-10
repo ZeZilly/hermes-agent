@@ -1,5 +1,0 @@
-<task>
-  <name>Sistem Başarı Oranı Optimizasyonu</name>
-  <description>Başarı oranı %90 altına düştü. Logları analiz et ve sistemi stabilize et.</description>
-  <action>git status && npm prune</action>
-</task>
